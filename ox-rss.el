@@ -3,9 +3,11 @@
 ;; Copyright (C) 2013-2021 Free Software Foundation, Inc.
 
 ;; Author: Bastien Guerry <bzg@gnu.org>
-;; Maintainer: Nick Savage <nick@nicksavage.ca>
+;; Maintainer: Benedict Wang <foss@bhw.name>
+;; Version: 0.0.1
+;; Package-Requires: ((emacs "26.1") (org "9.3"))
 ;; Keywords: org, wp, blog, feed, rss
-;; Homepage: https://git.sr.ht/~bzg/org-contrib
+;; Homepage: https://github.com/benedicthw/ox-rss.git
 
 ;; This file is not part of GNU Emacs.
 
@@ -249,12 +251,12 @@ communication channel."
 	     (pubdate (let ((system-time-locale "C"))
 			(if (and pubdate0 (not (string-empty-p pubdate0)))
 			    (format-time-string
-			     "%a, %d %b %Y %H:%M:%S %z"
+			     "%a, %d %b %Y %T %z"
 			     (org-time-string-to-time pubdate0)))))
 	     (title (org-rss-plain-text
 		     (or (org-element-property :RSS_TITLE headline)
 			 (replace-regexp-in-string
-			  org-bracket-link-regexp
+			  org-link-bracket-re
 			  (lambda (m) (or (match-string 3 m)
 					  (match-string 1 m)))
 			  (org-element-property :raw-value headline))) info))
@@ -287,7 +289,8 @@ communication channel."
 	   title publink email author guid pubdate contents))))))
 
 (defun org-rss-build-categories (headline info)
-  "Build categories for the RSS item."
+  "Build categories for the RSS item from INFO.
+Fallback to the HEADLINE :CATEGORY property."
   (if (eq (plist-get info :rss-categories) 'from-tags)
       (mapconcat
        (lambda (c) (format "<category><![CDATA[%s]]></category>" c))
@@ -320,14 +323,14 @@ as a communication channel."
    "</rss>"))
 
 (defun org-rss-build-channel-info (info)
-  "Build the RSS channel information."
+  "Given plist INFO build the RSS channel information."
   (let* ((system-time-locale "C")
 	 (title (org-export-data (plist-get info :title) info))
 	 (email (org-export-data (plist-get info :email) info))
 	 (author (and (plist-get info :with-author)
 		      (let ((auth (plist-get info :author)))
 			(and auth (org-export-data auth info)))))
-	 (date (format-time-string "%a, %d %b %Y %H:%M:%S %z")) ;; RFC 882
+	 (date (format-time-string "%a, %d %b %Y %T %z")) ;; RFC 882
 	 (description (org-export-data (plist-get info :description) info))
 	 (lang (plist-get info :language))
 	 (keywords (plist-get info :keywords))
@@ -379,7 +382,8 @@ information."
    (org-timestamp-translate timestamp)))
 
 (defun org-rss-plain-text (contents info)
-  "Convert plain text into RSS encoded text."
+  "Convert plain text CONTENTS into RSS encoded text.
+INFO is a plist used as a communication channel"
   (let (output)
     (setq output (org-html-encode-plain-text contents)
 	  output (org-export-activate-smart-quotes
@@ -388,7 +392,10 @@ information."
 ;;; Filters
 
 (defun org-rss-final-function (contents backend info)
-  "Prettify the RSS output."
+  "Prettify the RSS output.
+CONTENTS is the headline contents as a transcoded string.  BACKEND
+is a symbol representation of the backend used.  INFO is a plist
+used as a communication channel."
   (with-temp-buffer
     (xml-mode)
     (insert contents)

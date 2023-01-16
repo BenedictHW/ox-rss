@@ -3,9 +3,9 @@ ox-rss.el --- RSS 2.0 Back-End for Org Export Engine
 Copyright (C) 2013-2021 Free Software Foundation, Inc.
 
 Author: Bastien Guerry <bzg@gnu.org>
-Maintainer: Nick Savage <nick@nicksavage.ca>
+Maintainer: Benedict Wang <foss@bhw.name>
 Keywords: org, wp, blog, feed, rss
-Homepage: https://git.sr.ht/~bzg/org-contrib
+Homepage: https://github.com/benedicthw/ox-rss
 
 This file is not part of GNU Emacs.
 
