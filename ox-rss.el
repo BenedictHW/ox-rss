@@ -305,14 +305,14 @@ Fallback to the HEADLINE :CATEGORY property."
   "Return complete document string after RSS conversion.
 CONTENTS is the transcoded contents string.  INFO is a plist used
 as a communication channel."
-  (let (style (plist-get info :rss-stylesheet))
-	(concat
-	 (format "<?xml version=\"1.0\" encoding=\"%s\"?>"
-			 (symbol-name org-html-coding-system))
-	 (if style
-		 (format "\n<?xml-stylesheet type=\"text/xsl\" href=\"%s\"?>"
-				 style))
-	 "\n<rss version=\"2.0\"
+  (let ((style (plist-get info :rss-stylesheet)))
+	  (concat
+	   (format "<?xml version=\"1.0\" encoding=\"%s\"?>"
+			       (symbol-name org-html-coding-system))
+	   (if style
+		     (format "\n<?xml-stylesheet type=\"text/xsl\" href=\"%s\"?>"
+				         style))
+	   "\n<rss version=\"2.0\"
 	xmlns:content=\"http://purl.org/rss/1.0/modules/content/\"
 	xmlns:wfw=\"http://wellformedweb.org/CommentAPI/\"
 	xmlns:dc=\"http://purl.org/dc/elements/1.1/\"
@@ -322,11 +322,11 @@ as a communication channel."
 	xmlns:georss=\"http://www.georss.org/georss\"
         xmlns:geo=\"http://www.w3.org/2003/01/geo/wgs84_pos#\"
         xmlns:media=\"http://search.yahoo.com/mrss/\">"
-	 "<channel>"
-	 (org-rss-build-channel-info info) "\n"
-	 contents
-	 "</channel>\n"
-	 "</rss>")))
+	   "<channel>"
+	   (org-rss-build-channel-info info) "\n"
+	   contents
+	   "</channel>\n"
+	   "</rss>")))
 
 (defun org-rss-build-channel-info (info)
   "Given plist INFO build the RSS channel information."
